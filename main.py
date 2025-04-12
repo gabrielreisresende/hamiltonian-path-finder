@@ -1,44 +1,51 @@
-def is_valid(v, pos, path, graph):
-    if graph[path[pos - 1]][v] == 0:
+from view import draw_graph
+
+def is_hamiltonian_path(graph, path):
+    if len(path) != len(graph):
         return False
-    if v in path:
-        return False
+
+    for i in range(len(path) - 1):
+        if path[i + 1] not in graph[path[i]]:
+            return False
+
     return True
 
 
-def hamiltonian_util(graph, path, pos):
-    if pos == len(graph):
-        return graph[path[pos - 1]][path[0]] == 1
+def find_hamiltonian_path(graph, path):
+    
+    if is_hamiltonian_path(graph, path):
+        return True
 
-    for v in range(1, len(graph)):
-        if is_valid(v, pos, path, graph):
-            path[pos] = v
-            if hamiltonian_util(graph, path, pos + 1):
+    for vertex in graph:
+        if vertex not in path:
+            path.append(vertex)
+            if find_hamiltonian_path(graph, path):
                 return True
-            path[pos] = -1
+            path.pop()  
+
     return False
 
 
-def find_hamiltonian_path(graph):
-    path = [-1] * len(graph)
-    path[0] = 0
-
-    if not hamiltonian_util(graph, path, 1):
-        print("Não existe Caminho Hamiltoniano.")
-        return None
-
-    print("Caminho Hamiltoniano encontrado:")
-    print(" -> ".join(str(v) for v in path) + f" -> {path[0]}")
-    return path
+def hamiltonian_path(graph):
+    for start_vertex in graph:
+        path = [start_vertex]
+        if find_hamiltonian_path(graph, path):
+            return path
+    return None
 
 
 if __name__ == "__main__":
-    grafo = [
-        [0, 1, 1, 1, 1],
-        [1, 0, 1, 1, 1],
-        [1, 1, 0, 1, 1],
-        [1, 1, 1, 0, 1],
-        [1, 1, 1, 1, 0]
-    ]
+    graph = {
+        0: [1, 2, 3],
+        1: [0, 2],
+        2: [0, 1, 3],
+        3: [0, 2]
+    }
 
-    find_hamiltonian_path(grafo)
+    result = hamiltonian_path(graph)
+    if result:
+        print("Caminho Hamiltoniano encontrado:", result)
+    else:
+        print("Nenhum Caminho Hamiltoniano encontrado.")
+
+    draw_graph(graph, result)
