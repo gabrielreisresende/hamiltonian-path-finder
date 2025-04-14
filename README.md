@@ -42,6 +42,141 @@ Abaixo está um exemplo de visualização gerada pelo programa:
 
 O algoritmo utiliza **backtracking** para encontrar um Caminho Hamiltoniano. Backtracking é uma técnica de resolução de problemas que utiliza uma abordagem sistemática para explorar todas as possíveis soluções de um problema, retrocedendo (ou "voltando atrás") sempre que uma solução parcial não pode ser estendida para uma solução completa. É amplamente utilizado em problemas de busca e otimização, como quebra-cabeças, jogos, problemas de grafos e outros problemas combinatórios.
 
+### **1. Função `is_hamiltonian_path`**
+
+```python
+def is_hamiltonian_path(graph, path):
+    if len(path) != len(graph):
+        return False
+
+    for i in range(len(path) - 1):
+        if path[i + 1] not in graph[path[i]]:
+            return False
+
+    return True
+```
+
+- **Objetivo**: Verificar se um caminho dado é um Caminho Hamiltoniano válido.
+- **Passos**:
+  1. Verifica se o comprimento do caminho é igual ao número de vértices no grafo.
+  2. Itera sobre os vértices no caminho para garantir que cada vértice consecutivo esteja conectado por uma aresta.
+  3. Retorna `True` se o caminho for válido, caso contrário, `False`.
+
+---
+
+### **2. Função `find_hamiltonian_path`**
+
+```python
+def find_hamiltonian_path(graph, path):
+    if is_hamiltonian_path(graph, path):
+        return True
+
+    for vertex in graph:
+        if vertex not in path:
+            path.append(vertex)
+            if find_hamiltonian_path(graph, path):
+                return True
+            path.pop()
+
+    return False
+```
+
+- **Objetivo**: Usar backtracking para encontrar um Caminho Hamiltoniano.
+- **Passos**:
+  1. Verifica se o caminho atual é um Caminho Hamiltoniano usando a função `is_hamiltonian_path`.
+  2. Tenta adicionar cada vértice ao caminho, garantindo que ele ainda não esteja no caminho.
+  3. Usa recursão para explorar todas as possibilidades de caminhos.
+  4. Remove o último vértice adicionado (backtracking) se o caminho não for válido.
+
+---
+
+### **3. Função `hamiltonian_path`**
+
+```python
+def hamiltonian_path(graph):
+    for start_vertex in graph:
+        path = [start_vertex]
+        if find_hamiltonian_path(graph, path):
+            return path
+    return None
+```
+
+- **Objetivo**: Tentar encontrar um Caminho Hamiltoniano a partir de cada vértice do grafo.
+- **Passos**:
+  1. Itera sobre todos os vértices do grafo como possíveis pontos de partida.
+  2. Chama a função `find_hamiltonian_path` para tentar encontrar um caminho a partir de cada vértice.
+  3. Retorna o caminho encontrado ou `None` se nenhum Caminho Hamiltoniano existir.
+
+---
+
+### **4. Função `draw_graph` (no arquivo `view.py`)**
+
+```python
+def draw_graph(graph, hamiltonian_path=None, output_path="./assets/graph_visualization.png"):
+    G = nx.DiGraph() if any(isinstance(v, list) for v in graph.values()) else nx.Graph()
+    
+    for node, neighbors in graph.items():
+        for neighbor in neighbors:
+            G.add_edge(node, neighbor)
+
+    pos = nx.spring_layout(G)  
+
+    nx.draw(G, pos, with_labels=True, node_color="lightblue", edge_color="gray", node_size=500, font_size=10)
+
+    if hamiltonian_path:
+        edges_in_path = [(hamiltonian_path[i], hamiltonian_path[i + 1]) for i in range(len(hamiltonian_path) - 1)]
+        nx.draw_networkx_edges(G, pos, edgelist=edges_in_path, edge_color="red", width=2)
+
+    plt.title("Visualização do Grafo e Caminho Hamiltoniano")
+    plt.savefig(output_path)
+    plt.show()
+```
+
+- **Objetivo**: Visualizar o grafo e destacar o Caminho Hamiltoniano encontrado.
+- **Passos**:
+  1. Cria um grafo usando a biblioteca `NetworkX`.
+  2. Adiciona os nós e arestas ao grafo.
+  3. Desenha o grafo original com todos os nós e arestas.
+  4. Se um Caminho Hamiltoniano for encontrado, destaca as arestas do caminho com uma cor diferente.
+  5. Salva a imagem gerada no diretório `assets`.
+
+---
+
+### **5. Execução Principal (`main.py`)**
+
+```python
+if __name__ == "__main__":
+    graph = {
+        0: [1, 2, 3],
+        1: [0, 2],
+        2: [0, 1, 3],
+        3: [0, 2]
+    }
+
+    result = hamiltonian_path(graph)
+    if result:
+        print("Caminho Hamiltoniano encontrado:", result)
+    else:
+        print("Nenhum Caminho Hamiltoniano encontrado.")
+
+    draw_graph(graph, result)
+```
+
+- **Objetivo**: Integrar todas as funções e executar o programa.
+- **Passos**:
+  1. Define o grafo como um dicionário de adjacências.
+  2. Chama a função `hamiltonian_path` para encontrar o Caminho Hamiltoniano.
+  3. Exibe o resultado no terminal.
+  4. Chama a função `draw_graph` para visualizar o grafo e o Caminho Hamiltoniano.
+
+---
+
+### **6. Resultado Final**
+
+- O programa encontra e exibe o Caminho Hamiltoniano no terminal.
+- Gera uma visualização do grafo com o Caminho Hamiltoniano destacado, salva como `graph_visualization.png` na pasta `assets`.
+
+
 ### 📤 Saída da execução:
 
 Abaixo está um exemplo da saída gerada pelo programa ao encontrar ou não encontrar um Caminho Hamiltoniano:
