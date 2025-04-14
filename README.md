@@ -231,8 +231,8 @@ Abaixo está um exemplo da saída gerada pelo programa ao encontrar ou não enco
      - O melhor caso ocorre quando o primeiro caminho testado é um Caminho Hamiltoniano válido.
      - Complexidade: **O(n)**, pois o algoritmo verifica apenas um caminho.
    - **Caso médio**:
-     - No caso médio, o algoritmo precisa explorar aproximadamente metade das permutações possíveis antes de encontrar um caminho válido.
-     - Complexidade: **O(n!/2)**.
+     - A complexidade no caso médio depende fortemente da estrutura do grafo e do algoritmo usado.
+     - Complexidade: **Entre O(n) e O(n!)**
    - **Pior caso**:
      - O pior caso ocorre quando não existe um Caminho Hamiltoniano no grafo, e o algoritmo precisa explorar todas as permutações possíveis.
      - Complexidade: **O(n!)**.
